@@ -40,36 +40,37 @@ def div_point(Q):
     return k * x
 
 
-def test(xy_point):
+def is_zero(xy_point, key):
+    if key % 2 != 0:
+        key -= 1
+        xy_point = sub_point(xy_point, 1)
+    return xy_point, key
+
+
+def is_rest(xy_point):
     return int(xy_point.x) % 2
 
 
-pubkey = "03a7a4c30291ac1db24b4ab00c442aa832f7794b5a0959bec6e8d7fee802289dcd"
-private_key = "0x202"
-key = int(private_key, 16)
+def show(pubkey, key, xy_point):
+    print(f"{pubkey} - Priv: {key} - Mod: {is_rest(xy_point)}")
 
-xy_point = pub2point(pubkey)
-total_range = 10
 
-print(f"{pubkey} - Priv: {key} - Mod: {test(xy_point)} ")
+pubkey = "033c4a45cbd643ff97d77f41ea37e843648d50fd894b864b0d52febc62f6454f7c"
+private_key = "0xD2C55"
+total_range = 20
+
+xy_point, key = is_zero(pub2point(pubkey), int(private_key, 16))
+
+show(pubkey, key, xy_point)
+
 for i in range(total_range):
     key /= 2
-
     xy_point = div_point(xy_point)
+
     compress = point2compress(xy_point)
-    print(f"{compress} - Priv: {key} - Mod: {test(xy_point)}")
+    show(compress, key, xy_point)
+
+    xy_point, key = is_zero(xy_point, key)
+
     if compress == Q:
         break
-    if key % 2 != 0:
-        print(compress)
-        key -= 1
-        xy_point = sub_point(xy_point, 1)
-        print("girdi")
-
-
-# add = add_point(xy_point, 6)
-# add_public_key = point2compress(add)
-# print(add_public_key)
-# sub = sub_point(xy_point, 3)
-# sub_public_key = point2compress(sub)
-# print(sub_public_key)
